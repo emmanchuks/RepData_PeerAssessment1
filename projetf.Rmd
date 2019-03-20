@@ -1,20 +1,29 @@
 ---
-title: "projectf"
-author: "Eze E.C."
-date: "19 March 2019"
-output: html_document
----
 
+title: "Reproducible Research: Peer Assessment 1"
+author: "Ezeonyebuchi Emmanuel Chukwuma"
+date: "20 March 2019"
+output:
+html_document:
+   keep_md:true
+
+---
+      
+      
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-```
+knitr::opts_chunk$set( fig.path = "figure/")
 
+```
+---
 ```{r}
+
 #Set working directory
 #setwd("./data")
 
 #install packages
 #install.packages("knitr")
+#install.packages("rmarkdown")
 library(knitr)
 library(dplyr)
 library(lubridate)
@@ -23,6 +32,8 @@ library(lubridate)
 fileURL <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
 if (!file.exists("data")) {
   dir.create("data")}
+if (!file.exists("PA1_template.md")) {
+  dir.create("PA1_template.md")}
 
 #Download data file
 #file <- download.file(fileURL, destfile = "./data/acivity.csv", method="auto")
@@ -118,8 +129,10 @@ plot(steps_per_day2, type = "h", lwd = 5, lend = "square", main = "NAs filled")
 abline(h = seq(0, 20000, 2500), lty = "dashed")
 #dev.off()
 
-#mean_total_steps_per_day <- mean(aggregate(steps_per_day))
-#median_total_steps_per_day <- median(aggregate(steps_per_day))
+#The distribution shape seems to change and become more clustered about its mean. The mean, median, and standard deviation changed after imputing missing values.
+cbind(rbind(summary(steps_per_day$steps)[c("Mean", "Median")],
+            summary(steps_per_day2$steps)[c("Mean", "Median")]), 
+      data.frame(SD = c(sd(steps_per_day$steps, na.rm = TRUE), sd(steps_per_day2$steps))))
 
 #Are there differences in activity patterns between weekdays and weekends?
 activity_data$weekday <- factor(format(activity_data$date, "%A"))
@@ -129,7 +142,7 @@ levels(activity_data$weekday) <- list(weekday = c("Monday", "Tuesday",
                                               "Friday"), weekend =
                                     c("Saturday", "Sunday"))
 
-#Make a panel plot containing a time series plot (i.e. type = âlâ) of the 5-minute interval (x-axis) 
+#Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) 
 #and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
 #See the README file in the GitHub repository to see an example of what this plot should look like 
 #using simulated data.
